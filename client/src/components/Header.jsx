@@ -47,7 +47,7 @@ const Header = () => {
             <FaMoon />
           </Button>
           <Link to="/sign-in">
-            <Button className="cursor-pointer bg-linear-to-r from-purple-600 to-blue-500 text-white  focus:ring-blue-300 dark:focus:ring-blue-800 ">
+            <Button  className="cursor-pointer bg-linear-to-r from-purple-600 to-blue-500 text-white  focus:ring-blue-300 dark:focus:ring-blue-300 transition-colors ease-in-out duration-500">
               Sign In
             </Button>
           </Link>
@@ -57,11 +57,13 @@ const Header = () => {
           <NavbarLink
             active={path === "/"}
             className={`${
-              path === "/" ? "bg-linear-to-r from-purple-600 to-blue-500" : ""
+              path === "/"
+                ? "bg-linear-to-r from-purple-600 to-blue-500 text-gray-200! rounded-xl transition-colors ease-in-out duration-500"
+                : ""
             }`}
             as="div"
           >
-            <Link className="w-full block " to={"/"}>
+            <Link className="w-full block px-2 py-0.5 " to={"/"}>
               Home
             </Link>
           </NavbarLink>
@@ -69,12 +71,12 @@ const Header = () => {
             active={path === "/about"}
             className={`${
               path === "/about"
-                ? "bg-linear-to-r from-purple-600 to-blue-500"
+                ? "bg-linear-to-r from-purple-600 to-blue-500  text-gray-200! rounded-xl transition-colors ease-in-out duration-500"
                 : ""
             }`}
             as="div"
           >
-            <Link className="w-full block" to={"/about"}>
+            <Link className="w-full block px-2 py-0.5" to={"/about"}>
               About
             </Link>
           </NavbarLink>
@@ -82,12 +84,12 @@ const Header = () => {
             active={path === "/projects"}
             className={`${
               path === "/projects"
-                ? "bg-linear-to-r from-purple-600 to-blue-500"
+                ? "bg-linear-to-r from-purple-600 to-blue-500  text-gray-200! rounded-xl transition-colors ease-in-out duration-500"
                 : ""
             }`}
             as="div"
           >
-            <Link className="w-full block" to={"/projects"}>
+            <Link className="w-full block px-2 py-0.5" to={"/projects"}>
               Projects
             </Link>
           </NavbarLink>
