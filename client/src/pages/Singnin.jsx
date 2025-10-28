@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Singup = () => {
+const Singnin = () => {
   return (
     <div>
-      Singup
+      Singnin
     </div>
   )
 }
 
-export default Singup
+export default Singnin

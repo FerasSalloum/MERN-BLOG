@@ -3,19 +3,23 @@ import { Routes, Route } from "react-router-dom";
 import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
-import Projects from "./pages/Projects";
-import Singin from "./pages/Singin";
-import Singup from "./pages/Singup";
+import Singnin from "./pages/Singnin";
+import Singnup from "./pages/Singnup";
+import Projects from "./pages/projects";
+import Header from "./components/Header";
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />}></Route>
-      <Route path="/about" element={<About />}></Route>
-      <Route path="/dashboard" element={<Dashboard />}></Route>
-      <Route path="/projects" element={<Projects />}></Route>
-      <Route path="/singin" element={<Singin />}></Route>
-      <Route path="/singup" element={<Singup />}></Route>
-    </Routes>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/singnin" element={<Singnin />} />
+        <Route path="/singnup" element={<Singnup />} />
+        <Route path="/projects" element={<Projects />} />
+      </Routes>
+    </>
   );
 };
 
