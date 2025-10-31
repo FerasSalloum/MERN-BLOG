@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose"
+import cors from "cors";
 import dotenv from "dotenv"
 import userRoutes from "./routers/user.route.js"
 import authRoutes from "./routers/auth.route.js"
@@ -11,6 +12,12 @@ mongoose.connect(process.env.MONGO).
         console.log(err)
     })
 const app = express()
+app.use(cors({
+    origin: "http://localhost:5173", // رابط مشروع React
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+}));
 app.use(express.json())
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
@@ -18,11 +25,11 @@ app.listen(3000, () => {
 app.use("/api/user", userRoutes)
 app.use("/api/auth", authRoutes)
 
-app.use((err,req,res,next)=>{
+app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500
     const message = err.message || "internal server Error"
     res.status(statusCode).json({
-        success:false,
+        success: false,
         statusCode,
         message
     })

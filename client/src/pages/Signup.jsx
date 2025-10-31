@@ -1,10 +1,61 @@
-import { Button, Label, TextInput } from "flowbite-react";
-import React from "react";
-import { Link } from "react-router-dom";
+import {
+  Button,
+  Label,
+  TextInput,
+  Alert,
+  Spinner,
+  createTheme,
+  ThemeProvider,
+} from "flowbite-react";
+import { HiInformationCircle } from "react-icons/hi";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const customTheme = createTheme({
+    spinner: {
+      color: {
+        custom: "fill-fuchsia-800",
+      },
+    },
+  });
+
+  const [formData, setFormData] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const Navigate = useNavigate();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+  const handelSumit = async (e) => {
+    e.preventDefault();
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage("please fill out all fields.");
+    }
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      const res = await fetch("http://localhost:3000/api/auth/sign-up", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success == false) {
+        setLoading(false);
+        return setErrorMessage(data.message);
+      }
+      if (res.ok) {
+        Navigate("/sign-in");
+      }
+      setLoading(false);
+    } catch (error) {
+      setErrorMessage(error);
+      setLoading(false);
+    }
+  };
   return (
-    <div className="min-h-screen mt-20">
+    <div className="min-h-screen mt-20 ">
       <div className="flex p-3 max-w-xl mx-auto flex-col md:flex-row md:items-center gap-5">
         {/* left */}
         <div className="flex-1">
@@ -21,7 +72,7 @@ const Signup = () => {
         </div>
         {/* rigth */}
         <div className="flex-1">
-          <form className="flex flex-col gap-4">
+          <form className="flex flex-col gap-4" onSubmit={handelSumit}>
             <div>
               <Label>your username</Label>
               <TextInput
@@ -29,6 +80,7 @@ const Signup = () => {
                 type="text"
                 placeholder="name"
                 required
+                onChange={handleChange}
               />
             </div>
             <div>
@@ -38,6 +90,7 @@ const Signup = () => {
                 type="email"
                 placeholder="name@email.com"
                 required
+                onChange={handleChange}
               />
             </div>
             <div>
@@ -47,10 +100,24 @@ const Signup = () => {
                 type="password"
                 placeholder="*********"
                 required
+                onChange={handleChange}
               />
             </div>
-            <Button className="SingnB" type="submit">
-              Singn Up
+            <Button
+              className="SingnB cursor-pointer"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <ThemeProvider theme={customTheme}>
+                    <Spinner color="custom" size="md" className="mr-5" />
+                  </ThemeProvider>
+                  <span className="text-lg">Loading...</span>
+                </>
+              ) : (
+                <span className="text-lg">Singn Up</span>
+              )}
             </Button>
           </form>
           <div className="flex gap-2 text-sm mt-5">
@@ -59,6 +126,12 @@ const Signup = () => {
               Singn in{" "}
             </Link>
           </div>
+          {errorMessage && (
+            <Alert color="failure" icon={HiInformationCircle}>
+              <span className="font-medium">Info alert!</span>
+              {errorMessage}
+            </Alert>
+          )}
         </div>
       </div>
     </div>
