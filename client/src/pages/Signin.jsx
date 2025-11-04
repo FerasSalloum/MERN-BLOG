@@ -10,31 +10,29 @@ import {
 import { HiInformationCircle } from "react-icons/hi";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInFaluer,
+  signInSuccess,
+} from "../app/user/userSlice.js";
 
 const Signin = () => {
-  const customTheme = createTheme({
-    spinner: {
-      color: {
-        custom: "fill-fuchsia-800",
-      },
-    },
-  });
-
-  const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error, currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const Navigate = useNavigate();
+  const [formData, setFormData] = useState({});
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
   const handelSumit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return setErrorMessage("please fill out all fields.");
+      // return setError("please fill out all fields.");
+      return dispatch(signInFaluer("please fill out all fields."));
     }
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart());
       const res = await fetch("http://localhost:3000/api/auth/sign-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,19 +40,23 @@ const Signin = () => {
       });
       const data = await res.json();
       if (data.success == false) {
-        setLoading(false);
-        return setErrorMessage(data.message);
+        return dispatch(signInFaluer(data.message));
       }
       if (res.ok) {
+        dispatch(signInSuccess(data));
         Navigate("/");
-
       }
-      setLoading(false);
     } catch (error) {
-      setErrorMessage(error);
-      setLoading(false);
+      dispatch(signInFaluer(error));
     }
   };
+  const customTheme = createTheme({
+    spinner: {
+      color: {
+        custom: "fill-fuchsia-800",
+      },
+    },
+  });
   return (
     <div className="min-h-screen mt-20 ">
       <div className="flex p-3 max-w-2xl mx-auto flex-col md:flex-row md:items-center gap-5 lg:max-w-4xl">
@@ -127,10 +129,10 @@ const Signin = () => {
               Singn up{" "}
             </Link>
           </div>
-          {errorMessage && (
+          {error && (
             <Alert color="failure" icon={HiInformationCircle}>
               <span className="font-medium">Info alert!</span>
-              {errorMessage}
+              {error}
             </Alert>
           )}
         </div>
