@@ -3,18 +3,21 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
-import { store } from "./app/store.js";
+import { store,persistor } from "./app/store.js";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 const container = document.getElementById("root");
 if (container) {
   const root = createRoot(container);
 
   root.render(
+    <PersistGate persistor={persistor}>
     <Provider store={store}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
     </Provider>
+    </PersistGate>
   );
 } else {
   throw new Error(
