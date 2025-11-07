@@ -1,6 +1,11 @@
 import React from "react";
 import {
+  Avatar,
   Button,
+  Dropdown,
+  DropdownDivider,
+  DropdownHeader,
+  DropdownItem,
   Navbar,
   NavbarCollapse,
   NavbarLink,
@@ -10,8 +15,10 @@ import {
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const path = useLocation().pathname;
   return (
     <div>
@@ -46,11 +53,39 @@ const Header = () => {
           >
             <FaMoon />
           </Button>
-          <Link to="/sign-in">
-            <Button  className="cursor-pointer bg-linear-to-r from-purple-600 to-blue-500 text-white  focus:ring-blue-300 dark:focus:ring-blue-300 transition-colors ease-in-out duration-500">
-              Sign In
-            </Button>
-          </Link>
+          {currentUser ? (
+            <Dropdown
+              label=""
+              dismissOnClick={false}
+              renderTrigger={() => (
+                <Avatar
+                  size="md"
+                  img={currentUser.profilePicture}
+                  rounded
+                  className="cursor-pointer"
+                />
+              )}
+            >
+              <DropdownHeader>
+                <span className="block text-sm">{currentUser.username}</span>
+                <span className="block truncate text-sm font-medium">
+                  {currentUser.email}
+                </span>
+              </DropdownHeader>
+              <DropdownDivider />
+              <Link to={"/dashboard?tab=profile"}>
+                <DropdownItem>Profile</DropdownItem>
+              </Link>
+              <DropdownItem>Sign out</DropdownItem>
+            </Dropdown>
+          ) : (
+            <Link to="/sign-in">
+              <Button className="cursor-pointer bg-linear-to-r from-purple-600 to-blue-500 text-white  focus:ring-blue-300 dark:focus:ring-blue-300 transition-colors ease-in-out duration-500">
+                Sign In
+              </Button>
+            </Link>
+          )}
+
           <NavbarToggle className="cursor-pointer" />
         </div>
         <NavbarCollapse>

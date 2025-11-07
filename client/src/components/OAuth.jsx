@@ -3,15 +3,8 @@ import React from "react";
 import { AiFillGoogleCircle } from "react-icons/ai";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "../firebases";
-import {
-  useDispatch,
-  //  useSelector
-} from "react-redux";
-import {
-  //   signInStart,
-  //   signInFaluer,
-  signInSuccess,
-} from "../app/user/userSlice.js";
+import { useDispatch } from "react-redux";
+import { signInSuccess } from "../app/user/userSlice.js";
 import { useNavigate } from "react-router-dom";
 const OAuth = () => {
   const dispatch = useDispatch();
@@ -33,8 +26,8 @@ const OAuth = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        dispatch(signInSuccess(data));
-        Navigate("/")
+        await dispatch(signInSuccess(data));
+        Navigate("/");
       }
     } catch (error) {
       console.log(error);
