@@ -10,6 +10,7 @@ import {
 import { HiInformationCircle } from "react-icons/hi";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 const Signup = () => {
   const customTheme = createTheme({
@@ -104,7 +105,7 @@ const Signup = () => {
               />
             </div>
             <Button
-              className="SingnB cursor-pointer"
+              className="SingnB cursor-pointer hover:shadow-lg hover:shadow-[#8490fa]"
               type="submit"
               disabled={loading}
             >
@@ -119,6 +120,7 @@ const Signup = () => {
                 <span className="text-lg">Singn Up</span>
               )}
             </Button>
+            <OAuth/>
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>

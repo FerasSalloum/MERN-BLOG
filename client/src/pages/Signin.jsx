@@ -16,9 +16,10 @@ import {
   signInFaluer,
   signInSuccess,
 } from "../app/user/userSlice.js";
+import OAuth from "../components/OAuth.jsx";
 
 const Signin = () => {
-  const { loading, error, currentUser } = useSelector((state) => state.user);
+  const { loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const Navigate = useNavigate();
   const [formData, setFormData] = useState({});
@@ -107,7 +108,7 @@ const Signin = () => {
               />
             </div>
             <Button
-              className="SingnB cursor-pointer"
+              className="SingnB cursor-pointer hover:shadow-lg hover:shadow-[#8490fa]"
               type="submit"
               disabled={loading}
             >
@@ -122,6 +123,7 @@ const Signin = () => {
                 <span className="text-lg">Singn In</span>
               )}
             </Button>
+            <OAuth/>
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Dont Have an account?</span>
