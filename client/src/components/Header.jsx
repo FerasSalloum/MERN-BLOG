@@ -14,11 +14,14 @@ import {
 } from "flowbite-react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaMoon } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { togolTheme } from "../app/theme/themeSlice";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const { theme } = useSelector((state) => state.theme);
+  const dispatch = useDispatch();
   const path = useLocation().pathname;
   return (
     <div>
@@ -50,8 +53,9 @@ const Header = () => {
           <Button
             className="cursor-pointer w-12 h-10 hidden sm:inline pl-[17px] bg-gray-700 dark:bg-gray-300 dark:text-gray-700"
             pill
+            onClick={() => dispatch(togolTheme())}
           >
-            <FaMoon />
+            {theme == "dark" ? <FaMoon /> : <FaSun />}
           </Button>
           {currentUser ? (
             <Dropdown
