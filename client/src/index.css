@@ -2,14 +2,18 @@
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 @custom-variant dark (&:where(.dark, .dark *));
+
 .SingnB {
   /* background-color: white; */
   position: relative;
   background-color: transparent;
   overflow: hidden;
 }
+.SingnB  span{
+  z-index: 1;
+}
 .SingnB::before {
-  z-index: -1;
+  /* z-index: -1; */
   content: "";
   position: absolute;
   top: -20px;

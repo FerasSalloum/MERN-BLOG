@@ -63,11 +63,11 @@ const Signin = () => {
       <div className="flex p-3 max-w-2xl mx-auto flex-col md:flex-row md:items-center gap-5 lg:max-w-4xl">
         {/* left */}
         <div className="flex-1">
-          <Link to="/" className="font-bold text-black text-4xl">
+          <Link to="/" className="font-bold text-black text-4xl  dark:text-white">
             <span className="px-2 py-1 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
               Feras's
             </span>
-            Blog
+             Blog
           </Link>
           <p className="text-sm mt-5">
             this is a demo project. you can sing im with your email and password
