@@ -46,10 +46,11 @@ export const singnin = async (req, res, next) => {
         next(error);
     }
 }
-export const google = async (req, res, next) => {
-    const { name, email, googlePhotoUrl } = req.body;
+
+export const sync_user_data = async (req, res, next) => {
+    const { name, email, profilePicture } = req.body;
     try {
-        const user = await User.findOne({ email })
+        const user = await User.findOneAndUpdate({ email })
         if (user) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
             const { password, ...rest } = user._doc;
@@ -60,10 +61,11 @@ export const google = async (req, res, next) => {
             const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
             const hashpassword = bcryptjs.hashSync(randomPassword, 10)
             const newUser = new User({
-                username: name.toLowerCase().split(" ").join("") + Math.random().toString(9).slice(-4),
+                username: name,
+                // username: name.toLowerCase().split(" ").join("") + Math.random().toString(9).slice(-4),
                 email,
                 password: hashpassword,
-                profilePicture: googlePhotoUrl,
+                profilePicture,
             })
             await newUser.save();
             const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET)
@@ -76,3 +78,4 @@ export const google = async (req, res, next) => {
         next(error)
     }
 }
+

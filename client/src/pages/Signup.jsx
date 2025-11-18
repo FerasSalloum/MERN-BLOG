@@ -11,6 +11,7 @@ import { HiInformationCircle } from "react-icons/hi";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { supabase } from "../supabaseClient";
 
 const Signup = () => {
   const customTheme = createTheme({
@@ -20,38 +21,70 @@ const Signup = () => {
       },
     },
   });
-
-  const [formData, setFormData] = useState({});
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const [user, setUser] = useState(null);
+  // const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const Navigate = useNavigate();
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
-  };
-  const handelSumit = async (e) => {
-    e.preventDefault();
-    if (!formData.username || !formData.email || !formData.password) {
-      return setErrorMessage("please fill out all fields.");
+  const handleSupabaseSignup = async (e) => {
+    e.preventDefault(); // لمنع الإرسال التقليدي
+
+    if (!name || !email || !password) {
+      return setErrorMessage("Please fill out all fields.");
     }
+
     try {
       setLoading(true);
       setErrorMessage(null);
-      const res = await fetch("http://localhost:3000/api/auth/sign-up", {
+
+      // 1. 🔑 التسجيل في Supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
+      });
+
+      if (authError) throw authError;
+
+      const user = authData.user;
+
+      if (!user) {
+        // إذا كان تأكيد البريد مفعّلاً
+        setErrorMessage("Please check your email to confirm your account.");
+        return;
+      }
+
+      // 2. 🔄 مزامنة البيانات (Upload/Create) مع MongoDB
+      const res = await fetch("http://localhost:3000/api/auth/sync-user-data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: user.user_metadata?.full_name || name,
+          email: user.email,
+          profilePicture: "https://xukihcnndjysdmzmitoi.supabase.co/storage/v1/object/public/imageFile/profilePicture.png",
+        }),
       });
-      const data = await res.json();
-      if (data.success == false) {
-        setLoading(false);
-        return setErrorMessage(data.message);
+
+      const mongoData = await res.json();
+
+      if (!res.ok || mongoData.success === false) {
+        // إذا فشلت المزامنة، يمكنك هنا تسجيل الخروج من Supabase لمنع وجود مستخدم غير متزامن
+        await supabase.auth.signOut();
+        throw new Error(mongoData.message || "Failed to sync with MongoDB.");
       }
-      if (res.ok) {
-        Navigate("/sign-in");
-      }
-      setLoading(false);
-    } catch (error) {
-      setErrorMessage(error);
+
+      // 3. ✅ نجاح: التوجيه (يمكنك هنا أيضاً إرسال إجراء Redux إذا كنت تستخدمه)
+      Navigate("/");
+    } catch (err) {
+      setErrorMessage(err.message ?? "Sign up error");
+    } finally {
       setLoading(false);
     }
   };
@@ -60,7 +93,10 @@ const Signup = () => {
       <div className="flex p-3 max-w-2xl mx-auto flex-col md:flex-row md:items-center gap-5 lg:max-w-4xl">
         {/* left */}
         <div className="flex-1">
-          <Link to="/" className="font-bold text-black text-4xl  dark:text-white">
+          <Link
+            to="/"
+            className="font-bold text-black text-4xl  dark:text-white"
+          >
             <span className="px-2 py-1 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
               Feras's
             </span>
@@ -73,7 +109,7 @@ const Signup = () => {
         </div>
         {/* rigth */}
         <div className="flex-1">
-          <form className="flex flex-col gap-4" onSubmit={handelSumit}>
+          <form className="flex flex-col gap-4" onSubmit={handleSupabaseSignup}>
             <div>
               <Label>your username</Label>
               <TextInput
@@ -81,7 +117,7 @@ const Signup = () => {
                 type="text"
                 placeholder="name"
                 required
-                onChange={handleChange}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div>
@@ -91,7 +127,7 @@ const Signup = () => {
                 type="email"
                 placeholder="name@email.com"
                 required
-                onChange={handleChange}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -101,7 +137,7 @@ const Signup = () => {
                 type="password"
                 placeholder="*********"
                 required
-                onChange={handleChange}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <Button
@@ -120,7 +156,7 @@ const Signup = () => {
                 <span className="text-lg">Singn Up</span>
               )}
             </Button>
-            <OAuth/>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>

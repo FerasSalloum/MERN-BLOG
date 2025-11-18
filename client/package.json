@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.10.1",
+    "@supabase/supabase-js": "^2.81.0",
     "@tailwindcss/vite": "^4.1.16",
     "firebase": "^12.5.0",
     "flowbite": "^3.1.2",

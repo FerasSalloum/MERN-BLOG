@@ -1,11 +1,11 @@
 import { Button } from 'flowbite-react'
 import React from 'react'
+import TestDashProfileUpload from '../components/Test'
 
 const Home = () => {
   return (
-    <div>
-      <Button>HOME</Button>
-    </div>
+    <div>HOME</div>
+      
   )
 }
 

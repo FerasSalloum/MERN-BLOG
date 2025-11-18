@@ -1,19 +1,23 @@
 import { Button, TextInput } from "flowbite-react";
 import React from "react";
 import { useSelector } from "react-redux";
+import TestDashProfileUpload from "./Test";
+
 const DashProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user);;
+ 
+  //////////////////////////////////////////////
+  // const [imageFileUploadProgress, setImageFileUploadProgress] = useState(0);
+  // const [imageFileUploadError, setImageFileUploadError] = useState(null);
+  //////////////////////////////////////////////
+  
   return (
     <div className="mx-auto max-w-lg p-3 min-h-screen">
-      <h1 className="my-7 text-center font-semibold text-3xl text-black dark:text-white">Pofile</h1>
+      <h1 className="my-7 text-center font-semibold text-3xl text-black dark:text-white">
+        Pofile
+      </h1>
       <form className="flex flex-col w-full  gap-4 ">
-        <div className="w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full">
-          <img
-            src={currentUser.profilePicture}
-            alt="user"
-            className="rounded-full w-full h-full object-cover border-6 border-gray-300"
-          />
-        </div>
+            <TestDashProfileUpload/>
         <TextInput
           type="text"
           id="username"

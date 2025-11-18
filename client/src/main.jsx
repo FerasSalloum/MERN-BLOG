@@ -7,6 +7,7 @@ import { store, persistor } from "./app/store.js";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import ThemeProvider from "./components/themeProvider.jsx";
+import SupabaseAuthListener from "./components/SupabaseAuthListener.jsx";
 const container = document.getElementById("root");
 if (container) {
   const root = createRoot(container);
@@ -14,11 +15,13 @@ if (container) {
   root.render(
     <PersistGate persistor={persistor}>
       <Provider store={store}>
-          <ThemeProvider>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-          </ThemeProvider>
+        <ThemeProvider>
+          <BrowserRouter>
+            <SupabaseAuthListener>
+              <App />
+            </SupabaseAuthListener>
+          </BrowserRouter>
+        </ThemeProvider>
       </Provider>
     </PersistGate>
   );
