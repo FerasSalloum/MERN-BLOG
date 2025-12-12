@@ -24,13 +24,11 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [user, setUser] = useState(null);
-  // const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const Navigate = useNavigate();
   const handleSupabaseSignup = async (e) => {
-    e.preventDefault(); // لمنع الإرسال التقليدي
+    e.preventDefault();
 
     if (!name || !email || !password) {
       return setErrorMessage("Please fill out all fields.");
@@ -50,6 +48,18 @@ const Signup = () => {
           },
         },
       });
+      const { data, error } =
+              await supabase.auth.signInWithPassword({
+                email, // استخدام state
+                password, // استخدام state
+              });
+      
+            if (error) {
+              // إذا فشلت المصادقة في Supabase (نهاية التسلسل بالفشل هنا)
+              return (
+                setErrorMessage(error.message || "Invalid email or password.")
+              );
+            }
 
       if (authError) throw authError;
 
@@ -81,6 +91,7 @@ const Signup = () => {
       }
 
       // 3. ✅ نجاح: التوجيه (يمكنك هنا أيضاً إرسال إجراء Redux إذا كنت تستخدمه)
+      
       Navigate("/");
     } catch (err) {
       setErrorMessage(err.message ?? "Sign up error");

@@ -56,6 +56,8 @@ export const sync_user_data = async (req, res, next) => {
             const { password, ...rest } = user._doc;
             res.status(200).cookie("access_token", token, {
                 httpOnly: true,
+                sameSite: 'lax',
+                expires: new Date(Date.now() + 3600000 * 24 * 7) // صالح لمدة 7 أيام
             }).json(rest);
         } else {
             const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
@@ -72,6 +74,8 @@ export const sync_user_data = async (req, res, next) => {
             const { password, ...rest } = newUser._doc;
             res.status(200).cookie("access_token", token, {
                 httpOnly: true,
+                sameSite: 'lax',
+                expires: new Date(Date.now() + 3600000 * 24 * 7) // صالح لمدة 7 أيام
             }).json(rest);
         }
     } catch (error) {
