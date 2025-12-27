@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useSelector, useDispatch } from "react-redux";
-import { updateSuccess } from "../app/user/userSlice"; //
+import { updateSuccess } from "../app/user/userSlice"; 
 import { Spinner } from "flowbite-react";
 
 export default function DashProfileUpload({

@@ -173,6 +173,7 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { loading, error } = useSelector((state) => state.user);
+  
   const handleSignInAndSync = async (e) => {
     e.preventDefault();
 
@@ -185,11 +186,10 @@ const Signin = () => {
 
     try {
       // 1. 🔑 المصادقة (Auth) باستخدام Supabase
-      const { data, error } =
-        await supabase.auth.signInWithPassword({
-          email, // استخدام state
-          password, // استخدام state
-        });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email, // استخدام state
+        password, // استخدام state
+      });
 
       if (error) {
         // إذا فشلت المصادقة في Supabase (نهاية التسلسل بالفشل هنا)
@@ -209,6 +209,7 @@ const Signin = () => {
           // نستخدم بيانات Supabase للمزامنة
           // name: user.user_metadata?.full_name || user.email.split("@")[0],
           email: user.email,
+          credentials: true,
           googlePhotoUrl:
             user.user_metadata?.avatar_url || user.avatar_url || null,
         }),
@@ -321,6 +322,7 @@ const Signin = () => {
           )}
         </div>
       </div>
+      
     </div>
   );
 };
