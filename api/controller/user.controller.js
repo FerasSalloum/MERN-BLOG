@@ -82,3 +82,11 @@ export const updateUserInfo = async (req, res, next) => {
         return next(error)
     }
 }
+export const deleteUser = async(req,res,next)=>{
+    try {
+        await User.findByIdAndDelete(req.body.id)
+        res.status(200).json("user has been deleted")
+    } catch (error) {
+        return next(error)
+    }
+}
