@@ -1,23 +1,22 @@
-import { Button, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateSuccess } from "../app/user/userSlice";
 import DashProfileUpload from "./DashProfileUpload";
-
+import { Button,TextInput, Modal, ModalBody, ModalHeader } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 const DashProfile = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-  const [user,setuser] =useState({
+  const [openModal, setOpenModal] = useState(false);
+  const [user, setuser] = useState({
     username: currentUser.username,
     email: currentUser.email,
-    password:"",
+    password: "",
   });
-  const handelChange = (e) => {     
-    setuser({...user ,[e.target.id] : e.target.value});    
+  const handelChange = (e) => {
+    setuser({ ...user, [e.target.id]: e.target.value });
   };
   const UpdateUser = async () => {
-    console.log(user);
-    
     try {
       if (!currentUser?._id) {
         throw new Error("لم يتم العثور على MongoDB ID لتحديثه.");
@@ -49,6 +48,31 @@ const DashProfile = () => {
       throw new Error("فشل تحديث ملف التعريف: " + err.message);
     }
   };
+  const deleteUserMongo = async () => {
+    try {
+      if(!currentUser?._id){
+      throw new Error("لم يتم العثور على MongoDB ID لتحديثه.");
+    }
+    const res = await fetch(`http://localhost:3000/api/user/delete`,{
+      method:"DELETE",
+       headers: { "Content-Type": "application/json" },
+    })
+  const data = await res.json()
+
+  if(!res.ok){
+    throw new Error(data.message || "لم يتم حذف الحساب ")
+  }
+  setOpenModal(false)
+    } catch (error) {
+    console.log(error);
+       
+    }
+  };
+  // const deleteUserSupabase = async () => {};
+  const handelDeleteUser =async ()=>{
+    await deleteUserMongo()
+    setOpenModal(false)
+  }
   return (
     <div className="mx-auto max-w-lg p-3 min-h-screen">
       <h1 className="my-7 text-center font-semibold text-3xl text-black dark:text-white">
@@ -94,9 +118,33 @@ const DashProfile = () => {
         </Button>
       </form>
       <div className="text-red-500 flex justify-between mt-5">
-        <span className="cursor-pointer">Delet Account</span>
+        <span className="cursor-pointer" onClick={() => setOpenModal(true)}>Delet Account</span>
         <span className="cursor-pointer">Sign Out</span>
       </div>
+      <Modal
+        show={openModal}
+        size="md"
+        onClose={() => setOpenModal(false)}
+        popup
+      >
+        <ModalHeader />
+        <ModalBody>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this product?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="red" onClick={() =>handelDeleteUser()}>
+                Yes, I'm sure
+              </Button>
+              <Button color="alternative" onClick={() => setOpenModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </ModalBody>
+      </Modal>
     </div>
   );
 };
